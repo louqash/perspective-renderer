@@ -1,5 +1,6 @@
 mod common;
 mod cube;
+mod sphere;
 mod renderer;
 
 use std::io::Write;
