@@ -13,15 +13,12 @@ impl Cube {
         }
     }
 }
-
-impl<'a> IntoIterator for &'a Cube {
-    type Item = (V3, V3);
-    type IntoIter = CubeIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
+impl<'a> RenderObject<'a> for Cube {
+    type Iter = CubeIterator<'a>;
+    fn cycle(&'a self) -> CubeIterator<'a> {
         CubeIterator {
             cube: self,
-            dp: 0.01,
+            dp: 0.1,
             face: 0,
             point: (-self.edge_length / 2.0, -self.edge_length / 2.0),
         }

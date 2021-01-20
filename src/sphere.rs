@@ -7,22 +7,16 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new(center: V3, radius: f32) -> Sphere {
-        Sphere {
-            center,
-            radius,
-        }
+        Sphere { center, radius }
     }
 }
-
-impl<'a> IntoIterator for &'a Sphere {
-    type Item = (V3, V3);
-    type IntoIter = SphereIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
+impl<'a> RenderObject<'a> for Sphere {
+    type Iter = SphereIterator<'a>;
+    fn cycle(&'a self) -> SphereIterator<'a> {
         SphereIterator {
             sphere: self,
             phi: (0.0, 0.0),
-            dphi: (0.01, 0.01)
+            dphi: (0.01, 0.01),
         }
     }
 }
@@ -45,8 +39,8 @@ impl<'a> Iterator for SphereIterator<'a> {
                 let phi_0_cos = self.phi.0.cos();
                 let phi_0_sin = self.phi.0.sin();
 
-                let x = rx*phi_0_cos - rz*phi_0_sin;
-                let z = rx*phi_0_sin + rz*phi_0_cos;
+                let x = rx * phi_0_cos - rz * phi_0_sin;
+                let z = rx * phi_0_sin + rz * phi_0_cos;
                 let y = ry;
 
                 self.phi.1 += self.dphi.1;
@@ -56,7 +50,6 @@ impl<'a> Iterator for SphereIterator<'a> {
                 self.phi.0 += self.dphi.0;
                 return self.next();
             }
-
         } else {
             None
         }

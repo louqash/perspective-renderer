@@ -29,6 +29,9 @@ impl Sub<f32> for V3 {
     }
 }
 
-pub trait RenderObject {
-    fn get_next(&self) -> Option<V3>;
+pub trait RenderObject<'a> {
+    type Iter;
+    fn cycle(&'a self) -> Self::Iter
+    where
+        Self::Iter: Iterator<Item = (V3, V3)>;
 }
