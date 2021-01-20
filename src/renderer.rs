@@ -1,5 +1,6 @@
 use crate::common::*;
 use crate::cube::Cube;
+use crate::sphere::Sphere;
 
 pub struct Context {
     screen: (usize, usize),
@@ -26,8 +27,10 @@ impl Context {
         let mut z_mem = vec![std::f32::MIN; pixel_count as usize];
         let sin_phi = phi.sin();
         let cos_phi = phi.cos();
-        let cube = Cube::new(V3(0.0, 0.0, 0.0), 6.0);
-        for (vertex, norm) in cube.into_iter() {
+        let terminal_font_ratio = 10.0/21.0;
+        // let cube = Cube::new(V3(0.0, 0.0, 0.0), 6.0);
+        let sphere = Sphere::new(V3(0.0, 0.0, 0.0), 6.0);
+        for (vertex, norm) in sphere.into_iter() {
             let (mut x, mut y, mut z) = (vertex.0, vertex.1, vertex.2);
             let new_x = cos_phi * x + sin_phi * y;
             let new_y = -sin_phi * x + cos_phi * y;
@@ -70,7 +73,7 @@ impl Context {
             };
 
             let pixel_dist_x =
-                (x - self.camera.0) / distance * scale + (self.screen.0 as f32) / 2.0;
+                (x - self.camera.0) / distance * scale / terminal_font_ratio + (self.screen.0 as f32) / 2.0;
             let pixel_dist_y =
                 -(y - self.camera.1) / distance * scale + (self.screen.1 as f32) / 2.0;
             let idx = (pixel_dist_y as usize) * self.screen.0 + pixel_dist_x as usize;
