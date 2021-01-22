@@ -1,4 +1,6 @@
 use crate::common::*;
+use crate::renderer::RenderObject;
+
 #[derive(Clone, Debug)]
 pub struct Sphere {
     center: V3,
@@ -7,7 +9,10 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new(center: V3, radius: f32) -> Sphere {
-        Sphere { center, radius }
+        Sphere {
+            center,
+            radius,
+        }
     }
 }
 impl<'a> RenderObject<'a> for Sphere {
