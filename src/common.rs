@@ -51,6 +51,18 @@ impl Add<&V3> for V3 {
         V3(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
     }
 }
+impl Add<V3> for &V3 {
+    type Output = V3;
+    fn add(self, rhs: V3) -> Self::Output {
+        V3(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
+    }
+}
+impl Add<&V3> for &V3 {
+    type Output = V3;
+    fn add(self, rhs: &V3) -> Self::Output {
+        V3(self.0 + rhs.0, self.1 + rhs.1, self.2 + rhs.2)
+    }
+}
 impl Add<f32> for V3 {
     type Output = V3;
     fn add(self, rhs: f32) -> Self::Output {
@@ -59,6 +71,12 @@ impl Add<f32> for V3 {
 }
 
 impl Sub<&V3> for V3 {
+    type Output = V3;
+    fn sub(self, rhs: &V3) -> Self::Output {
+        V3(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
+    }
+}
+impl Sub<&V3> for &V3 {
     type Output = V3;
     fn sub(self, rhs: &V3) -> Self::Output {
         V3(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)

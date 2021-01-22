@@ -24,6 +24,9 @@ impl<'a> RenderObject<'a> for Sphere {
             dphi: (0.01, 0.01),
         }
     }
+    fn position(&'a self) -> V3 {
+        self.center
+    }
 }
 
 pub struct SphereIterator<'a> {
@@ -48,8 +51,10 @@ impl<'a> Iterator for SphereIterator<'a> {
                 let z = rx * phi_0_sin + rz * phi_0_cos;
                 let y = ry;
 
+                let point = V3(x, y, z) + &self.sphere.center;
+
                 self.phi.1 += self.dphi.1;
-                return Some((V3(x, y, z), V3(x, y, z)));
+                return Some((point, V3(x, y, z)));
             } else {
                 self.phi.1 = 0.0;
                 self.phi.0 += self.dphi.0;

@@ -3,11 +3,12 @@ use crate::common::*;
 pub trait RenderObject<'a> {
     type Iter: Iterator<Item = (V3, V3)>;
     fn cycle(&'a self) -> Self::Iter;
+    fn position(&'a self) -> V3;
 }
 pub struct Context {
     screen: (usize, usize),
     pixel_count: usize,
-    camera: (f32, f32),
+    camera: V3,
     buffer: Vec<u8>,
     z_indexes: Vec<f32>,
 }
@@ -17,7 +18,7 @@ impl Context {
         Context {
             screen: (screen_w, screen_h),
             pixel_count: screen_w * screen_h,
-            camera: (0.0, 0.0),
+            camera: V3(0.0, 0.0, 0.0),
             buffer: vec![b' '; screen_w * screen_h],
             z_indexes: vec![std::f32::MIN; screen_w * screen_h],
         }
@@ -35,12 +36,15 @@ impl Context {
     pub fn render_object<'a, Object: RenderObject<'a>>(&'a mut self, object: &'a Object) {
         let light = V3(1.0, 1.0, 1.0);
 
-        let distance = 8.0;
         let scale = 10.0;
+        let distance = object.position().2;
+        if distance <= 0.0 {
+            return
+        }
 
         let terminal_font_ratio = 10.0 / 21.0;
-        for (vertex, norm) in object.cycle() {
-            let V3(x, y, z) = vertex;
+        for (point, norm) in object.cycle() {
+            let V3(x, y, z) = point;
             let norm_len = norm.len();
 
             let dot_prod = norm.dot(&light);
@@ -49,19 +53,19 @@ impl Context {
                 12 => b'@',
                 11 => b'$',
                 10 => b'J',
-                9 => b'i',
-                8 => b'*',
-                7 => b'=',
-                6 => b'~',
-                5 => b'-',
-                4 => b';',
-                3 => b':',
-                2 => b',',
-                _ => b'.',
+                 9 => b'i',
+                 8 => b'*',
+                 7 => b'=',
+                 6 => b'~',
+                 5 => b'-',
+                 4 => b';',
+                 3 => b':',
+                 2 => b',',
+                 _ => b'.',
             };
 
-            let pixel_dist_x = (x - self.camera.0) / distance * scale / terminal_font_ratio
-                + (self.screen.0 as f32) / 2.0;
+            let pixel_dist_x =
+                (x - self.camera.0) / distance * scale / terminal_font_ratio + (self.screen.0 as f32) / 2.0;
             let pixel_dist_y =
                 -(y - self.camera.1) / distance * scale + (self.screen.1 as f32) / 2.0;
             let idx = (pixel_dist_y as usize) * self.screen.0 + pixel_dist_x as usize;
