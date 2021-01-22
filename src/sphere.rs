@@ -5,13 +5,15 @@ use crate::renderer::RenderObject;
 pub struct Sphere {
     center: V3,
     radius: f32,
+    color: Color
 }
 
 impl Sphere {
-    pub fn new(center: V3, radius: f32) -> Sphere {
+    pub fn new(center: V3, radius: f32, color: Color) -> Sphere {
         Sphere {
             center,
             radius,
+            color
         }
     }
     pub fn translate(&mut self, vec: V3) {
@@ -29,6 +31,9 @@ impl<'a> RenderObject<'a> for Sphere {
     }
     fn position(&'a self) -> V3 {
         self.center
+    }
+    fn color(&'a self) -> Color {
+        self.color
     }
 }
 

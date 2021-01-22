@@ -102,3 +102,21 @@ impl Div<f32> for V3 {
         V3(self.0 / rhs, self.1 / rhs, self.2 / rhs)
     }
 }
+
+#[derive(Clone, Copy, Debug)]
+pub enum Color {
+    Red,
+    Green,
+    Blue,
+    Default
+}
+impl Color {
+    pub fn get_terminal_escape_code(&self) -> &str {
+        match self {
+            Color::Red => "\x1B[31m",
+            Color::Green => "\x1B[32m",
+            Color::Blue => "\x1B[34m",
+            Color::Default => "\x1B[39m",
+        }
+    }
+}

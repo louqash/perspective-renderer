@@ -7,10 +7,11 @@ pub struct Cube {
     edge_length: f32,
     vertices: [V3; 8],
     normal_vectors: [V3; 6],
+    color: Color
 }
 
 impl Cube {
-    pub fn new(center: V3, edge_length: f32) -> Cube {
+    pub fn new(center: V3, edge_length: f32, color: Color) -> Cube {
         let halfsize = edge_length/2.0;
         let vertices: [V3; 8] = [
             V3( halfsize,  halfsize,  halfsize),
@@ -34,7 +35,8 @@ impl Cube {
             center,
             edge_length,
             vertices,
-            normal_vectors
+            normal_vectors,
+            color
         }
     }
     pub fn rotate_x(&mut self, phi: f32) {
@@ -92,6 +94,9 @@ impl<'a> RenderObject<'a> for Cube {
     }
     fn position(&'a self) -> V3 {
         self.center
+    }
+    fn color(&'a self) -> Color {
+        self.color
     }
 }
 

@@ -4,12 +4,13 @@ pub trait RenderObject<'a> {
     type Iter: Iterator<Item = (V3, V3)>;
     fn cycle(&'a self) -> Self::Iter;
     fn position(&'a self) -> V3;
+    fn color(&'a self) -> Color;
 }
 pub struct Context {
     screen: (usize, usize),
     pixel_count: usize,
     camera: V3,
-    buffer: Vec<u8>,
+    buffer: Vec<(Color, u8)>,
     z_indexes: Vec<f32>,
 }
 
@@ -19,17 +20,17 @@ impl Context {
             screen: (screen_w, screen_h),
             pixel_count: screen_w * screen_h,
             camera: V3(0.0, 0.0, 0.0),
-            buffer: vec![b' '; screen_w * screen_h],
+            buffer: vec![(Color::Default, b' '); screen_w * screen_h],
             z_indexes: vec![std::f32::MIN; screen_w * screen_h],
         }
     }
 
     pub fn next_frame(&mut self) {
-        self.buffer = vec![b' '; self.pixel_count];
+        self.buffer = vec![(Color::Default, b' '); self.pixel_count];
         self.z_indexes = vec![std::f32::MIN; self.pixel_count];
     }
 
-    pub fn get_frame(&self) -> &[u8] {
+    pub fn get_frame(&self) -> &[(Color, u8)] {
         &self.buffer
     }
 
@@ -37,7 +38,7 @@ impl Context {
         let light = V3(1.0, 1.0, 1.0);
 
         let scale = 10.0;
-        let distance = object.position().2;
+        let distance = -object.position().2;
         if distance <= 0.0 {
             return
         }
@@ -70,7 +71,7 @@ impl Context {
                 -(y - self.camera.1) / distance * scale + (self.screen.1 as f32) / 2.0;
             let idx = (pixel_dist_y as usize) * self.screen.0 + pixel_dist_x as usize;
             if idx < self.pixel_count && self.z_indexes[idx] < z {
-                self.buffer[idx] = ch;
+                self.buffer[idx] = (object.color(), ch);
                 self.z_indexes[idx] = z;
             }
         }
