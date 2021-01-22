@@ -14,6 +14,9 @@ impl Sphere {
             radius,
         }
     }
+    pub fn translate(&mut self, vec: V3) {
+        self.center += vec;
+    }
 }
 impl<'a> RenderObject<'a> for Sphere {
     type Iter = SphereIterator<'a>;
